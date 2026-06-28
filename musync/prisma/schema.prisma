@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  provider  Provider
+
+  stream    Stream?
+  songs     Song[]            @relation("AddedSongs")
+  songVotes SongUpVote[]
+}
+
+model Stream {
+  id        String   @id @default(uuid())
+  active    Boolean  @default(true)
+
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+
+  songs     Song[]
+}
+
+model Song {
+  id            String   @id @default(uuid())
+  songId        String   // extracted ID
+  url           String
+  title         String
+  smallImgUrl   String
+  bigImgUrl     String
+  played        Boolean  @default(false)
+
+  streamId      String
+  stream        Stream   @relation(fields: [streamId], references: [id], onDelete: Cascade)
+
+  addedById     String
+  addedBy       User     @relation("AddedSongs", fields: [addedById], references: [id])
+
+  upvotes       SongUpVote[]
+}
+
+model SongUpVote {
+  id      String @id @default(uuid())
+
+  userId  String
+  songId  String
+
+  user    User  @relation(fields: [userId], references: [id])
+  song    Song  @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, songId])
+}
+
+enum Provider {
+  Google
+}
