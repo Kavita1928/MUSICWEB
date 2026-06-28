@@ -74,7 +74,7 @@ export default function ParticipantView({
   useEffect(() => {
     if (!creatorId) return;
 
-    const socket = new WebSocket("wss://musync-w072.onrender.com");
+    const socket = new WebSocket("wss://musicweb-d38j.onrender.com");
     setSocket(socket);
 
     const onMessage = (event: MessageEvent) => {
@@ -98,7 +98,7 @@ export default function ParticipantView({
         JSON.stringify({
           type: "receiver",
           creatorId,
-        })
+        }),
       );
     };
 
@@ -220,7 +220,7 @@ export default function ParticipantView({
   /* ===================== YT PREVIEW ===================== */
   const extractYoutubeId = (url: string): string | null => {
     const match = url.match(
-      /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})/
+      /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})/,
     );
     return match ? match[1] : null;
   };
@@ -355,79 +355,79 @@ export default function ParticipantView({
                 <h3 className="text-xl font-bold mb-4">Upcoming Queue</h3>
 
                 <div className="space-y-3 max-h-[700px] overflow-y-auto">
-                  {queue.length === 0 ? (
-                    // EMPTY STATE
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground py-12">
-                      <div className="text-center">
-                        <p>No video in queue</p>
+                  {
+                    queue.length === 0 ?
+                      // EMPTY STATE
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground py-12">
+                        <div className="text-center">
+                          <p>No video in queue</p>
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    // QUEUE LIST
-                    queue.map((item) => {
-                      if (!item.id) return null;
-                      return (
-                        <div
-                          key={item.id}
-                          onClick={() => setCurrentVideoId(item.id)}
-                          className={`p-3 rounded-xl border transition-all cursor-pointer backdrop-blur ${
-                            currentVideoId === item.id
-                              ? "bg-accent/20 border-accent"
+                      // QUEUE LIST
+                    : queue.map((item) => {
+                        if (!item.id) return null;
+                        return (
+                          <div
+                            key={item.id}
+                            onClick={() => setCurrentVideoId(item.id)}
+                            className={`p-3 rounded-xl border transition-all cursor-pointer backdrop-blur ${
+                              currentVideoId === item.id ?
+                                "bg-accent/20 border-accent"
                               : "bg-background/40 border-border/40 hover:bg-background/60"
-                          }`}
-                        >
-                          <div className="flex items-start gap-3">
-                            {/* VOTING */}
-                            <div className="flex flex-col items-center gap-1">
-                              {item.haveUpvoted ? (
-                                <button
-                                  disabled={voteLoading[item.id]}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDownvote(item.id);
-                                  }}
-                                  className="p-1 hover:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                                >
-                                  <ArrowDown className="w-4 h-4" />
-                                </button>
-                              ) : (
-                                <button
-                                  disabled={voteLoading[item.id]}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleUpvote(item.id);
-                                  }}
-                                  className="p-1 hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                                >
-                                  <ArrowUp className="w-4 h-4" />
-                                </button>
-                              )}
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              {/* VOTING */}
+                              <div className="flex flex-col items-center gap-1">
+                                {item.haveUpvoted ?
+                                  <button
+                                    disabled={voteLoading[item.id]}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDownvote(item.id);
+                                    }}
+                                    className="p-1 hover:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                                  >
+                                    <ArrowDown className="w-4 h-4" />
+                                  </button>
+                                : <button
+                                    disabled={voteLoading[item.id]}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleUpvote(item.id);
+                                    }}
+                                    className="p-1 hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                                  >
+                                    <ArrowUp className="w-4 h-4" />
+                                  </button>
+                                }
 
-                              <span className="text-sm font-bold text-accent">
-                                {item.upvotes}
-                              </span>
-                            </div>
+                                <span className="text-sm font-bold text-accent">
+                                  {item.upvotes}
+                                </span>
+                              </div>
 
-                            {/* THUMBNAIL + TITLE */}
-                            <div className="flex-1 flex gap-3">
-                              <img
-                                src={item.bigImageUrl}
-                                className="w-12 h-9 rounded object-cover"
-                              />
-                              <div className="flex-1 min-w-0">
-                                <p className="text-xs font-semibold truncate">
-                                  {item.title}
-                                </p>
-                                <p className="text-xs text-muted-foreground truncate">
-                                  by {item.userId}
-                                </p>
+                              {/* THUMBNAIL + TITLE */}
+                              <div className="flex-1 flex gap-3">
+                                <img
+                                  src={item.bigImageUrl}
+                                  className="w-12 h-9 rounded object-cover"
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-xs font-semibold truncate">
+                                    {item.title}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground truncate">
+                                    by {item.userId}
+                                  </p>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })
-                  )}
+                        );
+                      })
+
+                  }
                 </div>
               </Card>
             </div>
